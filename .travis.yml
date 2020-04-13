@@ -70,6 +70,7 @@ before_install:
   echo STACK_VER $STACK_VER
   echo ARGS $ARGS
   echo PKG_FLAGS $PKG_FLAGS
+  echo TRAVIS_BUILD_DIR $TRAVIS_BUILD_DIR
   # set -e seems to cause stack setup to fail?
   set -u
 
@@ -107,6 +108,7 @@ before_install:
   echo STACK_VER $STACK_VER
   echo ARGS $ARGS
   echo PKG_FLAGS $PKG_FLAGS
+  echo TRAVIS_BUILD_DIR $TRAVIS_BUILD_DIR
   set -euo pipefail
 
   case "$BUILD" in
@@ -138,6 +140,7 @@ install:
   echo STACK_VER $STACK_VER
   echo ARGS $ARGS
   echo PKG_FLAGS $PKG_FLAGS
+  echo TRAVIS_BUILD_DIR $TRAVIS_BUILD_DIR
   set -euo pipefail
 
   case "$BUILD" in
@@ -169,6 +172,7 @@ script:
   echo STACK_VER $STACK_VER
   echo ARGS $ARGS
   echo PKG_FLAGS $PKG_FLAGS
+  echo TRAVIS_BUILD_DIR $TRAVIS_BUILD_DIR
   set -euo pipefail
 
   case "$BUILD" in
@@ -185,12 +189,12 @@ script:
         tar tf /tmp/void-0.7.2/void-0.7.2.tar.gz
         tar tf /tmp/void-0.7.2/void-0.7.2-docs.tar.gz
       fi
+      cd $TRAVIS_BUILD_DIR
       ;;
     cabal)
       cabal install --flags="enablewebtests" --enable-tests --enable-benchmarks --force-reinstalls --ghc-options=-O0 --reorder-goals --max-backjumps=-1 $CABALARGS $PACKAGES
       # TODO:  --show-details=always
 
-      ORIGDIR=$(pwd)
       for dir in $PACKAGES
       do
         cd $dir
@@ -204,7 +208,7 @@ script:
         cabal configure --enable-tests -v2 $PKG_FLAGS
         cabal build
         cabal test --show-details=always
-        cd $ORIGDIR
+        cd $TRAVIS_BUILD_DIR
       done
       ;;
   esac
@@ -216,6 +220,7 @@ script:
   echo BUILD $BUILD
   echo STACK_VER $STACK_VER
   echo ARGS $ARGS
+  echo TRAVIS_BUILD_DIR $TRAVIS_BUILD_DIR
   echo PKG_FLAGS $PKG_FLAGS
 
   set +eux
@@ -236,6 +241,7 @@ before_deploy:
   echo STACK_VER $STACK_VER
   echo ARGS $ARGS
   echo PKG_FLAGS $PKG_FLAGS
+  echo TRAVIS_BUILD_DIR $TRAVIS_BUILD_DIR
   set -euo pipefail
 
   echo ${PKGVER}
