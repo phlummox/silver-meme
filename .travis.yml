@@ -17,16 +17,16 @@ matrix:
   include:
   # # We grab the appropriate GHC and cabal-install versions from hvr's PPA. See:
   # # https://github.com/hvr/multi-ghc-travis
-  # - env: BUILD=cabal GHCVER=7.10.3 CABALVER=1.22 HAPPYVER=1.19.5 ALEXVER=3.1.7 PKG_FLAGS="--flags=enablewebtests"
+  # - env: BUILD=cabal GHCVER=7.10.3 CABALVER=1.22 PKG_FLAGS="--flags=enablewebtests"
   #   compiler: ": #GHC 7.10.3"
   #   addons: {apt: {packages: [cabal-install-1.22,ghc-7.10.3,happy-1.19.5,alex-3.1.7], sources: [hvr-ghc]}}
 
   # # version w/ no web test
-  # - env: BUILD=cabal GHCVER=7.10.3 CABALVER=1.22 HAPPYVER=1.19.5 ALEXVER=3.1.7 PKG_FLAGS="--flags=-enablewebtests"
+  # - env: BUILD=cabal GHCVER=7.10.3 CABALVER=1.22 PKG_FLAGS="--flags=-enablewebtests"
   #   compiler: ": #GHC 7.10.3"
   #   addons: {apt: {packages: [cabal-install-1.22,ghc-7.10.3,happy-1.19.5,alex-3.1.7], sources: [hvr-ghc]}}
 
-  # - env: BUILD=cabal GHCVER=8.0.1 CABALVER=1.24 HAPPYVER=1.19.5 ALEXVER=3.1.7 PKG_FLAGS="--flags=enablewebtests"
+  # - env: BUILD=cabal GHCVER=8.0.1 CABALVER=1.24 PKG_FLAGS="--flags=enablewebtests"
   #   compiler: ": #GHC 8.0.1"
   #   addons: {apt: {packages: [cabal-install-1.24,ghc-8.0.1,happy-1.19.5,alex-3.1.7], sources: [hvr-ghc]}}
 
@@ -34,26 +34,26 @@ matrix:
   # # variable, such as using --stack-yaml to point to a different file.
 
   # # no doctests for lts-3
-  # - env: BUILD=stack STACK_VER="1.5.1" ARGS="--resolver lts-3 --stack-yaml stack-lts-3.yaml" PKG_FLAGS="--flag hup:enablewebtests"
+  # - env: BUILD=stack STACK_VER="1.5.1" STACK_RESOLVER="lts-3" PKG_FLAGS="--flag hup:enablewebtests"
   #   compiler: ": #stack 7.10.3"
   #   addons: {apt: {packages: [libgmp-dev], sources: [hvr-ghc]}}
 
-  # #- env: BUILD=stack ARGS="--resolver lts-6" GHCVER=7.10.3 PKG_FLAGS="--flag hup:enablewebtests --flag hup:BuildStackBasedTests"
+  # #- env: BUILD=stack STACK_RESOLVER="lts-6" PKG_FLAGS="--flag hup:enablewebtests --flag hup:BuildStackBasedTests"
   # #  compiler: ": #stack 7.10.3"
   # #  addons: {apt: {packages: [libgmp-dev], sources: [hvr-ghc]}}
 
-  # - env: BUILD=stack STACK_VER="1.5.1" ARGS="--resolver lts-7 --stack-yaml stack-lts-7.yaml" PKG_FLAGS="--flag hup:enablewebtests --flag hup:BuildStackBasedTests"
+  # - env: BUILD=stack STACK_VER="1.5.1" STACK_RESOLVER="lts-7" PKG_FLAGS="--flag hup:enablewebtests --flag hup:BuildStackBasedTests"
   #   compiler: ": #stack 8.0.1"
   #   addons: {apt: {packages: [libgmp-dev], sources: [hvr-ghc]}}
 
 # use this one for github release
 # stack 1.5.1 fails, w/ lts-11
-  - env: BUILD=stack STACK_VER="1.9.3" ARGS="--resolver lts-11 --stack-yaml stack-lts-11.yaml" RELEASE="true" PKG_FLAGS="--flag hup:enablewebtests --flag hup:BuildStackBasedTests"
+  - env: BUILD=stack STACK_VER="1.9.3" STACK_RESOLVER="lts-11" RELEASE="true" PKG_FLAGS="--flag hup:enablewebtests --flag hup:BuildStackBasedTests"
     compiler: ": #stack 8.0.1"
     addons: {apt: {packages: [libgmp-dev], sources: [hvr-ghc]}}
 
   # # Build on macOS in addition to Linux
-  # - env: BUILD=stack STACK_VER="1.9.3" ARGS="--resolver lts-11 --stack-yaml stack-lts-11.yaml" PKG_FLAGS="--flag hup:enablewebtests --flag hup:BuildStackBasedTests"
+  # - env: BUILD=stack STACK_VER="1.9.3" STACK_RESOLVER="lts-11" PKG_FLAGS="--flag hup:enablewebtests --flag hup:BuildStackBasedTests"
   #   compiler: ": #stack default osx"
   #   os: osx
 
@@ -63,24 +63,38 @@ before_install:
 - unset CC
 # Download and unpack the stack executable
 - export PATH=/opt/ghc/$GHCVER/bin:/opt/cabal/$CABALVER/bin:/opt/alex/$ALEXVER/bin:/opt/happy/$HAPPYVER/bin:$HOME/.cabal/bin:$PATH
-- mkdir -p ~/.local/bin
+# default resolver to use
+- | if [ -z "$STACK_RESOLVER" ] ; then
+      export STACK_RESOLVER="lts-11"
+    fi
+
+- export ARGS="--resolver $STACK_RESOLVER --stack-yaml stack-$STACK_RESOLVER.yaml"
+
+# set up build tools
 - |
 
   printf '\n***BEFORE_INSTALL***\n'
   set -x
   pwd
   ls -al
-  echo BUILD $BUILD
-  echo STACK_VER $STACK_VER
+
+  echo STACK_RESOLVER $STACK_RESOLVER
   echo ARGS $ARGS
+  echo BUILD $BUILD
   echo PKG_FLAGS $PKG_FLAGS
   echo TRAVIS_BUILD_DIR $TRAVIS_BUILD_DIR
   echo PATH $PATH
   # set -e seems to cause stack setup to fail?
   set -u
 
+  mkdir -p ~/.local/bin
+
+  # always install stack - it's used for getting
+  # a list of packages to build and their dirs
+
   export LINUX64_STACK="https://github.com/commercialhaskell/stack/releases/download/v${STACK_VER}/stack-${STACK_VER}-linux-x86_64.tar.gz"
   export OSX_STACK="https://github.com/commercialhaskell/stack/releases/download/v${STACK_VER}/stack-${STACK_VER}-osx-x86_64.tar.gz"
+
   if [ `uname` = "Darwin" ]
   then
     travis_retry curl --insecure -L "${OSX_STACK}" | tar xz --strip-components=1 --include '*/stack' -C ~/.local/bin
@@ -90,10 +104,20 @@ before_install:
     stack setup
   fi
 
-  # Use the more reliable S3 mirror of Hackage
-  mkdir -p $HOME/.cabal
-  echo 'remote-repo: hackage.haskell.org:http://hackage.fpcomplete.com/' > $HOME/.cabal/config
-  echo 'remote-repo-cache: $HOME/.cabal/packages' >> $HOME/.cabal/config
+  case "$BUILD" in
+    stack)
+      echo ""
+      ;;
+
+    cabal)
+
+      # Use the more reliable S3 mirror of Hackage
+      mkdir -p $HOME/.cabal
+      echo 'remote-repo: hackage.haskell.org:http://hackage.fpcomplete.com/' > $HOME/.cabal/config
+      echo 'remote-repo-cache: $HOME/.cabal/packages' >> $HOME/.cabal/config
+
+      ;;
+  esac
 
   set +eux
   set +o pipefail
@@ -106,9 +130,9 @@ before_install:
 
   pwd
   ls -al
-  echo BUILD $BUILD
-  echo STACK_VER $STACK_VER
+  echo STACK_RESOLVER $STACK_RESOLVER
   echo ARGS $ARGS
+  echo BUILD $BUILD
   echo PKG_FLAGS $PKG_FLAGS
   echo TRAVIS_BUILD_DIR $TRAVIS_BUILD_DIR
   echo PATH $PATH
@@ -129,8 +153,6 @@ before_install:
   set +o pipefail
 
 install:
-- echo "$(ghc --version) [$(ghc --print-project-git-commit-id 2> /dev/null || echo '?')]"
-- if [ -f configure.ac ]; then autoreconf -i; fi
 - |
 
   printf '\n***INSTALL***\n'
@@ -139,9 +161,9 @@ install:
 
   pwd
   ls -al
-  echo BUILD $BUILD
-  echo STACK_VER $STACK_VER
+  echo STACK_RESOLVER $STACK_RESOLVER
   echo ARGS $ARGS
+  echo BUILD $BUILD
   echo PKG_FLAGS $PKG_FLAGS
   echo TRAVIS_BUILD_DIR $TRAVIS_BUILD_DIR
   echo PATH $PATH
@@ -149,11 +171,11 @@ install:
 
   case "$BUILD" in
     stack)
-      stack --no-terminal --install-ghc $ARGS test $PKG_FLAGS --bench --only-dependencies
+      stack $ARGS --no-terminal --install-ghc test $PKG_FLAGS --bench --only-dependencies
       ;;
     cabal)
       # Get the list of packages from the stack.yaml file
-      PACKAGES=$(stack --install-ghc query locals | grep '^ *path' | sed 's@^ *path:@@')
+      PACKAGES=$(stack $ARGS query locals | grep '^ *path' | sed 's@^ *path:@@')
 
       cabal install --only-dependencies --enable-tests --enable-benchmarks --force-reinstalls --ghc-options=-O0 --reorder-goals --max-backjumps=-1 $CABALARGS $PACKAGES
       ;;
@@ -172,9 +194,9 @@ script:
 
   pwd
   ls -al
-  echo BUILD $BUILD
-  echo STACK_VER $STACK_VER
+  echo STACK_RESOLVER $STACK_RESOLVER
   echo ARGS $ARGS
+  echo BUILD $BUILD
   echo PKG_FLAGS $PKG_FLAGS
   echo TRAVIS_BUILD_DIR $TRAVIS_BUILD_DIR
   echo PATH $PATH
@@ -182,15 +204,17 @@ script:
 
   case "$BUILD" in
     stack)
-      stack --no-terminal $ARGS test --bench --no-run-benchmarks --haddock --no-haddock-deps
-      stack --no-terminal $ARGS exec hup -- --version
+      # run tests
+      stack $ARGS --no-terminal test --bench --no-run-benchmarks --haddock --no-haddock-deps
+      stack $ARGS --no-terminal exec hup -- --version
       stack $ARGS install
+
       # if on linux, we now actually try out the binary on a
       # random package (void).
       # on macos: doesn't seem to work, no idea why.
       if [ ! `uname` = "Darwin" ] ; then
         cd /tmp && stack unpack void-0.7.2
-        cd /tmp/void-0.7.2 && stack $ARGS init && stack setup && stack build && hup packbuild && hup docbuild
+        cd /tmp/void-0.7.2 && stack $ARGS init && stack $ARGS setup && stack $ARGS build && hup packbuild && hup docbuild
         tar tf /tmp/void-0.7.2/void-0.7.2.tar.gz
         tar tf /tmp/void-0.7.2/void-0.7.2-docs.tar.gz
       fi
@@ -222,9 +246,10 @@ script:
 
   pwd
   ls -al
+  echo STACK_RESOLVER $STACK_RESOLVER
+  echo ARGS $ARGS
   echo BUILD $BUILD
   echo STACK_VER $STACK_VER
-  echo ARGS $ARGS
   echo PKG_FLAGS $PKG_FLAGS
   echo TRAVIS_BUILD_DIR $TRAVIS_BUILD_DIR
   echo PATH $PATH
@@ -241,9 +266,9 @@ before_deploy:
 
   pwd
   ls -al
-  echo BUILD $BUILD
-  echo STACK_VER $STACK_VER
+  echo STACK_RESOLVER $STACK_RESOLVER
   echo ARGS $ARGS
+  echo BUILD $BUILD
   echo PKG_FLAGS $PKG_FLAGS
   echo TRAVIS_BUILD_DIR $TRAVIS_BUILD_DIR
   echo PATH $PATH
@@ -261,8 +286,8 @@ before_deploy:
   ls -al;
 
   if [ ! -f "$SRC_TGZ" ] ; then
-    stack sdist;
-    distdir=`stack path --dist-dir`;
+    stack $ARGS sdist;
+    distdir=`stack $ARGS path --dist-dir`;
     cp $distdir/$SRC_TGZ .;
   fi
   ls -al "$SRC_TGZ"
