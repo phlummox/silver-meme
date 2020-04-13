@@ -84,6 +84,7 @@ before_install:
   else
     travis_retry curl -L "${LINUX64_STACK}" | tar xz --wildcards --strip-components=1 -C ~/.local/bin '*/stack'
     stack setup
+    stack install cabal-install
   fi
 
   # Use the more reliable S3 mirror of Hackage
@@ -207,6 +208,15 @@ script:
       done
       ;;
   esac
+
+  printf '\n***ENDING SCRIPT***\n'
+
+  pwd
+  ls -al
+  echo BUILD $BUILD
+  echo STACK_VER $STACK_VER
+  echo ARGS $ARGS
+  echo PKG_FLAGS $PKG_FLAGS
 
   set +eux
   set +o pipefail
