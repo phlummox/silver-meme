@@ -5,9 +5,9 @@ language: generic
 # Caching so the next build will be fast too.
 cache:
   directories:
-  - $HOME/.ghc
-  - $HOME/.cabal
-  - $HOME/.stack
+  - "$HOME/.ghc"
+  - "$HOME/.cabal"
+  - "$HOME/.stack"
 
 matrix:
   include:
@@ -61,6 +61,16 @@ before_install:
 - export PATH=/opt/ghc/$GHCVER/bin:/opt/cabal/$CABALVER/bin:$HOME/.local/bin:/opt/alex/$ALEXVER/bin:/opt/happy/$HAPPYVER/bin:$HOME/.cabal/bin:$PATH
 - mkdir -p ~/.local/bin
 - |
+
+  set -x
+  pwd
+  ls -al
+  echo BUILD $BUILD
+  echo STACK_VER $STACK_VER
+  echo ARGS $ARGS
+  echo PKG_FLAGS $PKG_FLAGS
+  set -euo pipefail
+
   export LINUX64_STACK="https://github.com/commercialhaskell/stack/releases/download/v${STACK_VER}/stack-${STACK_VER}-linux-x86_64.tar.gz"
   export OSX_STACK="https://github.com/commercialhaskell/stack/releases/download/v${STACK_VER}/stack-${STACK_VER}-osx-x86_64.tar.gz"
   if [ `uname` = "Darwin" ]
@@ -79,8 +89,20 @@ before_install:
   echo 'remote-repo: hackage.haskell.org:http://hackage.fpcomplete.com/' > $HOME/.cabal/config
   echo 'remote-repo-cache: $HOME/.cabal/packages' >> $HOME/.cabal/config
 
+  set +euox
+  set +o pipefail
+
 - |
-  set -ex
+  set -x
+
+  pwd
+  ls -al
+  echo BUILD $BUILD
+  echo STACK_VER $STACK_VER
+  echo ARGS $ARGS
+  echo PKG_FLAGS $PKG_FLAGS
+  set -euo pipefail
+
   case "$BUILD" in
     stack)
       stack --version
@@ -91,13 +113,24 @@ before_install:
       travis_retry cabal update
       ;;
   esac
-  set +ex
+
+  set +euox
+  set +o pipefail
 
 install:
 - echo "$(ghc --version) [$(ghc --print-project-git-commit-id 2> /dev/null || echo '?')]"
 - if [ -f configure.ac ]; then autoreconf -i; fi
 - |
-  set -ex
+  set -x
+
+  pwd
+  ls -al
+  echo BUILD $BUILD
+  echo STACK_VER $STACK_VER
+  echo ARGS $ARGS
+  echo PKG_FLAGS $PKG_FLAGS
+  set -euo pipefail
+
   case "$BUILD" in
     stack)
       stack --no-terminal --install-ghc $ARGS test $PKG_FLAGS --bench --only-dependencies
@@ -109,12 +142,23 @@ install:
       cabal install --only-dependencies --enable-tests --enable-benchmarks --force-reinstalls --ghc-options=-O0 --reorder-goals --max-backjumps=-1 $CABALARGS $PACKAGES
       ;;
   esac
-  set +ex
+
+  set +euox
+  set +o pipefail
 
 
 script:
 - |
-  set -ex
+  set -x
+
+  pwd
+  ls -al
+  echo BUILD $BUILD
+  echo STACK_VER $STACK_VER
+  echo ARGS $ARGS
+  echo PKG_FLAGS $PKG_FLAGS
+  set -euo pipefail
+
   case "$BUILD" in
     stack)
       stack --no-terminal $ARGS test --bench --no-run-benchmarks --haddock --no-haddock-deps
@@ -152,14 +196,24 @@ script:
       done
       ;;
   esac
-  set +ex
+
+  set +euox
+  set +o pipefail
 
 before_deploy:
 - PKGVER=$(cabal info . | head -n  1 | cut -d ' ' -f 2)
 - SRC_TGZ=$PKGVER.tar.gz
 - |
   set -x;
-  pwd;
+
+  pwd
+  ls -al
+  echo BUILD $BUILD
+  echo STACK_VER $STACK_VER
+  echo ARGS $ARGS
+  echo PKG_FLAGS $PKG_FLAGS
+  set -euo pipefail
+
   echo ${PKGVER}
   echo ${SRC_TGZ}
   ls -al;
@@ -173,6 +227,8 @@ before_deploy:
   tar cf hup_linux_x86_64.tgz --gzip hup
   ls -al hup_linux_x86_64.tgz
 
+  set +euox
+  set +o pipefail
 
 deploy:
   provider: releases
@@ -181,9 +237,10 @@ deploy:
   - hup_linux_x86_64.tgz
   # overwrite: true
   api_key:
-    secure: RzlHVrVLGvb8Or+PLzfdUF6YFIFU65xqZ3hl8TodglRnA8avcfej/W/K/aaXKb+i9eL4lmbc8WtTR5Qm8CxNtlR/uPAC1LBEVhJQHBKn6n1/uRTMOaRs75UjsIcm3GQKuOWI0HpMvb8Px7LBqdlE6wJURvqBTqkbomO6OMl8I2gMO0rYYP/ylf5e9Ozl0AzMWqzjwrA3brw6CTPWcup8s4GwHnsdisxrQDkE1ltt5P+MluJGKbQ4PDHrINOnUXSL/lcvUHc4i5clAqO7Baff0QCdl/RBxML5/fDB/OHuJpDu3GRXcWloQReu1gw3zuVaT9yA5JZvf4XQy2fnFNZUDbeNlM4L1tt19JOvLTzBPrr/KchxJ3aKW8L9z0dpMQ1sxE77VyJ+Bpg68k9pzBGcZ8XO0kraS1ZuAdP5LyuOnxOusG6vJA+MRSh+3kmeuOsqi0xVlrr89RiuIwFTG2fegDj5+PH6MTOnEJlfKHmK4pEB+NSSfVvmX8JBOlTg6v/HJpiMxGxpdkrvAC6Adb+gm1M6f5eZrPU3R0AFmDQ1me9HVCg2cL3l4lMgn88OUkRy79ipPPajLZ/CpE/+6j3Gau3XuZbg8LbH3Vo72KSeWaqPo9wge2/poeqfPYBvj+GGAR0GihAOJLvOldX1+VMQd6GWpTp16W2hA7XePxOIQkI=
+    # silver-meme secure key begins "Ki0t..."
+    secure: Ki0t7bBVqTI2wqljf1qGXrVOgCNFQ03mblgZza5FsVAC35dwT9SJCYFdL7PmiNmG0ytWujdl0rqjAF/7S8mQcKdJrVAfj8ObT6ZyhxPTQekM3fALqlxCqHNeUuUT2r1p/fLTBNI52sTZaNsRixIMCgqd5onD4lgrSPSLwETJt8zxf+y9yQ+2JYTsY2k1mgPhgyAsgbWnO0xJXrxvekiz51u7UDUPV2e0ZUTb1vG+OvcZZ8ArfpMQLwJI4dDySpd99grl6SAcoS/mNPr/RYPaTGhmdKKRdS3jREhVanJGgZbd5jgs8TFsGO5NZWM4l1ACFQBcCEP6ZA6N/x/DpR9AufuFqW4kVkgDkWlGczrqcDgTkaKgJwfR3Q9hZu0weAKSoqmDppncapYhxAGNV0mzTdz24wx20v2ECtI25QcYQd7S22SJVDAvVRLQUtJJlAOQjjrDkCNCwTBClFcGoHyN2Qd/RaYql6B0ZPseHBs1SzNK/3H0ZGM3DFh9OTqM6jixwKSAgJexDWNHuNoIDqQxC/10ju2ObV+G2gwc1gW89xwCKl1zBS68WlOSiBbT6cd6r0WQl9CRB/FFxQY6tY2aI44cdsfFepETxdHCY6fDlhillfeRtwyL8Vi0K24utP/DhGfD2stGqgogREzIOlp+0LoV7amQV9fQ43gnG9Tmqws=
   on:
     #tags: true
-    all_branches: true
+    #all_branches: true
     repo: phlummox/silver-meme
     condition: $RELEASE = true
