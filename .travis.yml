@@ -62,11 +62,12 @@ before_install:
 # Using compiler above sets CC to an invalid value, so unset it
 - unset CC
 # Download and unpack the stack executable
-- export PATH=/opt/ghc/$GHCVER/bin:/opt/cabal/$CABALVER/bin:/opt/alex/$ALEXVER/bin:/opt/happy/$HAPPYVER/bin:$HOME/.cabal/bin:$PATH
+- export PATH="/opt/ghc/$GHCVER/bin:/opt/cabal/$CABALVER/bin:/opt/alex/$ALEXVER/bin:/opt/happy/$HAPPYVER/bin:$HOME/.cabal/bin:$PATH"
 # default resolver to use
-- | if [ -z "$STACK_RESOLVER" ] ; then
-      export STACK_RESOLVER="lts-11"
-    fi
+- |
+  if [ -z "$STACK_RESOLVER" ] ; then
+    export STACK_RESOLVER="lts-11"
+  fi
 
 - export ARGS="--resolver $STACK_RESOLVER --stack-yaml stack-$STACK_RESOLVER.yaml"
 
