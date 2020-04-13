@@ -15,11 +15,10 @@ cache:
 
 matrix:
   include:
-  # # We grab the appropriate GHC and cabal-install versions from hvr's PPA. See:
-  # # https://github.com/hvr/multi-ghc-travis
-  # - env: BUILD=cabal GHCVER=7.10.3 CABALVER=1.22 PKG_FLAGS="--flags=enablewebtests"
-  #   compiler: ": #GHC 7.10.3"
-  #   addons: {apt: {packages: [cabal-install-1.22,ghc-7.10.3,happy-1.19.5,alex-3.1.7], sources: [hvr-ghc]}}
+  # We grab the appropriate GHC and cabal-install versions from hvr's PPA
+  - env: BUILD=cabal GHCVER=7.10.3 CABALVER=1.22 PKG_FLAGS="--flags=enablewebtests"
+    compiler: ": #GHC 7.10.3"
+    addons: {apt: {packages: [cabal-install-1.22,ghc-7.10.3,happy-1.19.5,alex-3.1.7], sources: [hvr-ghc]}}
 
   # # version w/ no web test
   # - env: BUILD=cabal GHCVER=7.10.3 CABALVER=1.22 PKG_FLAGS="--flags=-enablewebtests"
@@ -313,7 +312,7 @@ deploy:
   api_key:
     secure: r3K/RSJagffOZCoXgrFmHHCtOu5QPd8TvFzlmlZMUHcfXyW/wD/Kp2HvZIeLbyb+xlyLp1vSeutkHF3osWNcGQr2vnJ7OE+Sncajec7O2z3HAYxwdpc1xiH2f6A+SMDzneGUJuA6u8+EMcM1Ydojw3ftk+BGlrgw/izea6ACdkjp4Cuojn9ucgtxrxAGvpz9p/icQRQRkf2fe2TPZSBUvpdzW48BpJuY8KrHVbh6fpTo3gwX3D0e5GWt/LpYJ6yk94le8fO3Ah7K1aK5NaKTariyI3I2nCM7US6h4mNJmzSwmTdfQtl/QaAKpcXySUTYXvcXeiSj63kZnmfp8UDKKMg6dCBamk3cL/t2lWUfuRoKH++4exUEnsD03x8QvXHthRTdt39Yps6d08Ak0UljQtZh2Iv/hJhFO26ImOIMqHllU2UHnxIt1hI4WvOXH6Pmv4F0uiRcZ4WI9kd0ne1+n5hJSsp/qoZaCtXRpr8Sw5WbI7uuS7UQA0oKRsFHbIDU9Y2sdO3FgWycoSzUnJ+Ih3YJ1kS+oVMFtCVIgtqqVp1QQmeE2nhBLemw8aUco8ySS1S/iVlvEP9gFkYQe5yPVwKSZ/BVxtOt03Bg2fA8g7Lwq0alo5v+8giU2c3yTzJKgGdOApZxxTVyy+F/cEXJNvfWrOTAkepGJIWf2pkAiWU=
   on:
-    #tags: true
-    #all_branches: true
+    tags: true
+    all_branches: true
     repo: phlummox/silver-meme
     condition: $RELEASE = true
