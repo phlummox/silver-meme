@@ -11,36 +11,36 @@ cache:
 
 matrix:
   include:
-  # We grab the appropriate GHC and cabal-install versions from hvr's PPA. See:
-  # https://github.com/hvr/multi-ghc-travis
-  - env: BUILD=cabal GHCVER=7.10.3 CABALVER=1.22 HAPPYVER=1.19.5 ALEXVER=3.1.7 PKG_FLAGS="--flags=enablewebtests"
-    compiler: ": #GHC 7.10.3"
-    addons: {apt: {packages: [cabal-install-1.22,ghc-7.10.3,happy-1.19.5,alex-3.1.7], sources: [hvr-ghc]}}
+  # # We grab the appropriate GHC and cabal-install versions from hvr's PPA. See:
+  # # https://github.com/hvr/multi-ghc-travis
+  # - env: BUILD=cabal GHCVER=7.10.3 CABALVER=1.22 HAPPYVER=1.19.5 ALEXVER=3.1.7 PKG_FLAGS="--flags=enablewebtests"
+  #   compiler: ": #GHC 7.10.3"
+  #   addons: {apt: {packages: [cabal-install-1.22,ghc-7.10.3,happy-1.19.5,alex-3.1.7], sources: [hvr-ghc]}}
 
-  # version w/ no web test
-  - env: BUILD=cabal GHCVER=7.10.3 CABALVER=1.22 HAPPYVER=1.19.5 ALEXVER=3.1.7 PKG_FLAGS="--flags=-enablewebtests"
-    compiler: ": #GHC 7.10.3"
-    addons: {apt: {packages: [cabal-install-1.22,ghc-7.10.3,happy-1.19.5,alex-3.1.7], sources: [hvr-ghc]}}
+  # # version w/ no web test
+  # - env: BUILD=cabal GHCVER=7.10.3 CABALVER=1.22 HAPPYVER=1.19.5 ALEXVER=3.1.7 PKG_FLAGS="--flags=-enablewebtests"
+  #   compiler: ": #GHC 7.10.3"
+  #   addons: {apt: {packages: [cabal-install-1.22,ghc-7.10.3,happy-1.19.5,alex-3.1.7], sources: [hvr-ghc]}}
 
-  - env: BUILD=cabal GHCVER=8.0.1 CABALVER=1.24 HAPPYVER=1.19.5 ALEXVER=3.1.7 PKG_FLAGS="--flags=enablewebtests"
-    compiler: ": #GHC 8.0.1"
-    addons: {apt: {packages: [cabal-install-1.24,ghc-8.0.1,happy-1.19.5,alex-3.1.7], sources: [hvr-ghc]}}
+  # - env: BUILD=cabal GHCVER=8.0.1 CABALVER=1.24 HAPPYVER=1.19.5 ALEXVER=3.1.7 PKG_FLAGS="--flags=enablewebtests"
+  #   compiler: ": #GHC 8.0.1"
+  #   addons: {apt: {packages: [cabal-install-1.24,ghc-8.0.1,happy-1.19.5,alex-3.1.7], sources: [hvr-ghc]}}
 
-  # Stack builds. Can pass in arbitrary Stack arguments via the ARGS
-  # variable, such as using --stack-yaml to point to a different file.
+  # # Stack builds. Can pass in arbitrary Stack arguments via the ARGS
+  # # variable, such as using --stack-yaml to point to a different file.
 
-  # no doctests for lts-3
-  - env: BUILD=stack STACK_VER="1.5.1" ARGS="--resolver lts-3 --stack-yaml stack-lts-3.yaml" PKG_FLAGS="--flag hup:enablewebtests"
-    compiler: ": #stack 7.10.3"
-    addons: {apt: {packages: [libgmp-dev], sources: [hvr-ghc]}}
+  # # no doctests for lts-3
+  # - env: BUILD=stack STACK_VER="1.5.1" ARGS="--resolver lts-3 --stack-yaml stack-lts-3.yaml" PKG_FLAGS="--flag hup:enablewebtests"
+  #   compiler: ": #stack 7.10.3"
+  #   addons: {apt: {packages: [libgmp-dev], sources: [hvr-ghc]}}
 
-  #- env: BUILD=stack ARGS="--resolver lts-6" GHCVER=7.10.3 PKG_FLAGS="--flag hup:enablewebtests --flag hup:BuildStackBasedTests"
-  #  compiler: ": #stack 7.10.3"
-  #  addons: {apt: {packages: [libgmp-dev], sources: [hvr-ghc]}}
+  # #- env: BUILD=stack ARGS="--resolver lts-6" GHCVER=7.10.3 PKG_FLAGS="--flag hup:enablewebtests --flag hup:BuildStackBasedTests"
+  # #  compiler: ": #stack 7.10.3"
+  # #  addons: {apt: {packages: [libgmp-dev], sources: [hvr-ghc]}}
 
-  - env: BUILD=stack STACK_VER="1.5.1" ARGS="--resolver lts-7 --stack-yaml stack-lts-7.yaml" PKG_FLAGS="--flag hup:enablewebtests --flag hup:BuildStackBasedTests"
-    compiler: ": #stack 8.0.1"
-    addons: {apt: {packages: [libgmp-dev], sources: [hvr-ghc]}}
+  # - env: BUILD=stack STACK_VER="1.5.1" ARGS="--resolver lts-7 --stack-yaml stack-lts-7.yaml" PKG_FLAGS="--flag hup:enablewebtests --flag hup:BuildStackBasedTests"
+  #   compiler: ": #stack 8.0.1"
+  #   addons: {apt: {packages: [libgmp-dev], sources: [hvr-ghc]}}
 
 # use this one for github release
 # stack 1.5.1 fails, w/ lts-11
@@ -48,10 +48,10 @@ matrix:
     compiler: ": #stack 8.0.1"
     addons: {apt: {packages: [libgmp-dev], sources: [hvr-ghc]}}
 
-  # Build on macOS in addition to Linux
-  - env: BUILD=stack STACK_VER="1.9.3" ARGS="--resolver lts-11 --stack-yaml stack-lts-11.yaml" PKG_FLAGS="--flag hup:enablewebtests --flag hup:BuildStackBasedTests"
-    compiler: ": #stack default osx"
-    os: osx
+  # # Build on macOS in addition to Linux
+  # - env: BUILD=stack STACK_VER="1.9.3" ARGS="--resolver lts-11 --stack-yaml stack-lts-11.yaml" PKG_FLAGS="--flag hup:enablewebtests --flag hup:BuildStackBasedTests"
+  #   compiler: ": #stack default osx"
+  #   os: osx
 
 
 before_install:
@@ -158,15 +158,20 @@ before_deploy:
 - PKGVER=$(cabal info . | head -n  1 | cut -d ' ' -f 2)
 - SRC_TGZ=$PKGVER.tar.gz
 - |
+  set -x;
+  pwd;
+  echo ${PKGVER}
+  echo ${SRC_TGZ}
+  ls -al;
   if [ ! -f "$SRC_TGZ" ] ; then
     stack sdist;
     distdir=`stack path --dist-dir`;
     cp $distdir/$SRC_TGZ .;
   fi
-- ls -al "$SRC_TGZ"; true
-- cp ~/.local/bin/hup .
-- tar cf hup_linux_x86_64.tgz --gzip hup
-- ls -al hup_linux_x86_64.tgz
+  ls -al "$SRC_TGZ"; true
+  cp ~/.local/bin/hup .
+  tar cf hup_linux_x86_64.tgz --gzip hup
+  ls -al hup_linux_x86_64.tgz
 
 
 deploy:
@@ -178,7 +183,7 @@ deploy:
   api_key:
     secure: RzlHVrVLGvb8Or+PLzfdUF6YFIFU65xqZ3hl8TodglRnA8avcfej/W/K/aaXKb+i9eL4lmbc8WtTR5Qm8CxNtlR/uPAC1LBEVhJQHBKn6n1/uRTMOaRs75UjsIcm3GQKuOWI0HpMvb8Px7LBqdlE6wJURvqBTqkbomO6OMl8I2gMO0rYYP/ylf5e9Ozl0AzMWqzjwrA3brw6CTPWcup8s4GwHnsdisxrQDkE1ltt5P+MluJGKbQ4PDHrINOnUXSL/lcvUHc4i5clAqO7Baff0QCdl/RBxML5/fDB/OHuJpDu3GRXcWloQReu1gw3zuVaT9yA5JZvf4XQy2fnFNZUDbeNlM4L1tt19JOvLTzBPrr/KchxJ3aKW8L9z0dpMQ1sxE77VyJ+Bpg68k9pzBGcZ8XO0kraS1ZuAdP5LyuOnxOusG6vJA+MRSh+3kmeuOsqi0xVlrr89RiuIwFTG2fegDj5+PH6MTOnEJlfKHmK4pEB+NSSfVvmX8JBOlTg6v/HJpiMxGxpdkrvAC6Adb+gm1M6f5eZrPU3R0AFmDQ1me9HVCg2cL3l4lMgn88OUkRy79ipPPajLZ/CpE/+6j3Gau3XuZbg8LbH3Vo72KSeWaqPo9wge2/poeqfPYBvj+GGAR0GihAOJLvOldX1+VMQd6GWpTp16W2hA7XePxOIQkI=
   on:
-    tags: true
+    #tags: true
     all_branches: true
     repo: phlummox/hup
     condition: $RELEASE = true
