@@ -75,24 +75,32 @@ before_install:
   printf '\n***BEFORE_INSTALL***\n'
   set -x
   pwd
-  ls -al
+
+  echo AAA
 
   echo STACK_RESOLVER $STACK_RESOLVER
   echo ARGS $ARGS
   echo BUILD $BUILD
   echo PKG_FLAGS $PKG_FLAGS
   echo TRAVIS_BUILD_DIR $TRAVIS_BUILD_DIR
-  echo PATH $PATH
   # set -e seems to cause stack setup to fail?
   set -u
 
+  echo BBB
+
   mkdir -p ~/.local/bin
 
-  # always install stack - it's used for getting
+  echo CCC
+
+  # always install stack. used for getting
   # a list of packages to build and their dirs
+
+  echo DDD
 
   export LINUX64_STACK="https://github.com/commercialhaskell/stack/releases/download/v${STACK_VER}/stack-${STACK_VER}-linux-x86_64.tar.gz"
   export OSX_STACK="https://github.com/commercialhaskell/stack/releases/download/v${STACK_VER}/stack-${STACK_VER}-osx-x86_64.tar.gz"
+
+  echo EEE
 
   if [ `uname` = "Darwin" ]
   then
