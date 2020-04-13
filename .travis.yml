@@ -80,8 +80,10 @@ before_install:
   then
     travis_retry curl --insecure -L "${OSX_STACK}" | tar xz --strip-components=1 --include '*/stack' -C ~/.local/bin
     stack setup
-    stack install cabal-install
     export PATH=`stack path --compiler-bin`:$PATH
+    stack install cabal-install
+    which cabal
+    cabal --version
   else
     travis_retry curl -L "${LINUX64_STACK}" | tar xz --wildcards --strip-components=1 -C ~/.local/bin '*/stack'
     stack setup
@@ -227,6 +229,7 @@ script:
   set +o pipefail
 
 before_deploy:
+- which cabal
 - PKGVER=$(cabal info . | head -n  1 | cut -d ' ' -f 2)
 - SRC_TGZ=$PKGVER.tar.gz
 - |
@@ -242,7 +245,7 @@ before_deploy:
   echo ARGS $ARGS
   echo PKG_FLAGS $PKG_FLAGS
   echo TRAVIS_BUILD_DIR $TRAVIS_BUILD_DIR
-  set -euo pipefail
+  set -uo pipefail
 
   echo ${PKGVER}
   echo ${SRC_TGZ}
