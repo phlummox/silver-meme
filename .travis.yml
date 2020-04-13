@@ -288,8 +288,8 @@ before_deploy:
   fi
   ls -al "$SRC_TGZ"
   cp ~/.local/bin/hup .
-  tar cf hup_linux_x86_64.tgz --gzip hup
-  ls -al hup_linux_x86_64.tgz
+  tar cf ${PKGVER}_linux_x86_64.tgz --gzip hup
+  ls -al ${PKGVER}_linux_x86_64.tgz
 
   set +eux
   set +o pipefail
@@ -301,7 +301,7 @@ deploy:
   skip_cleanup: true
   file:
   - "$SRC_TGZ"
-  - hup_linux_x86_64.tgz
+  - "${PKGVER}_linux_x86_64.tgz"
   # NB: when creating api keys using the 'travis'
   # command-line tool:
   # Most of the online docco is out of date.
