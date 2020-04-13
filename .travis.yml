@@ -29,9 +29,6 @@ matrix:
   #   compiler: ": #GHC 8.0.1"
   #   addons: {apt: {packages: [cabal-install-1.24,ghc-8.0.1,happy-1.19.5,alex-3.1.7], sources: [hvr-ghc]}}
 
-  # # Stack builds. Can pass in arbitrary Stack arguments via the ARGS
-  # # variable, such as using --stack-yaml to point to a different file.
-
   # # no doctests for lts-3
   # - env: BUILD=stack STACK_VER="1.5.1" STACK_RESOLVER="lts-3" PKG_FLAGS="--flag hup:enablewebtests"
   #   compiler: ": #stack 7.10.3"
@@ -75,14 +72,18 @@ before_install:
 
   export ARGS="--resolver $STACK_RESOLVER --stack-yaml stack-$STACK_RESOLVER.yaml"
 
+  # only needed if we have special cabal
+  # requirements
+  if [ -z "$CABALARGS" ] ; then
+    export CABALARGS=""
+  fi
+
 # set up build tools
 # Download stack executable always
 - |
   printf '\n***BEFORE_INSTALL***\n'
   set -x
   pwd
-
-  echo AAA
 
   echo STACK_RESOLVER $STACK_RESOLVER
   echo ARGS $ARGS
@@ -92,21 +93,13 @@ before_install:
   # set -e seems to cause stack setup to fail?
   set -u
 
-  echo BBB
-
   mkdir -p ~/.local/bin
-
-  echo CCC
 
   # always install stack. used for getting
   # a list of packages to build and their dirs
 
-  echo DDD
-
   export LINUX64_STACK="https://github.com/commercialhaskell/stack/releases/download/v${STACK_VER}/stack-${STACK_VER}-linux-x86_64.tar.gz"
   export OSX_STACK="https://github.com/commercialhaskell/stack/releases/download/v${STACK_VER}/stack-${STACK_VER}-osx-x86_64.tar.gz"
-
-  echo EEE
 
   if [ `uname` = "Darwin" ]
   then
