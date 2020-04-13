@@ -215,7 +215,7 @@ script:
       # on macos: doesn't seem to work, no idea why.
       if [ ! `uname` = "Darwin" ] ; then
         cd /tmp && stack unpack void-0.7.2
-        cd /tmp/void-0.7.2 && stack $ARGS init && stack $ARGS setup && stack $ARGS build && hup packbuild && hup docbuild
+        cd /tmp/void-0.7.2 && stack --resolver $STACK_RESOLVER init && stack --resolver $STACK_RESOLVER setup && stack --resolver $STACK_RESOLVER build && hup packbuild && hup docbuild
         tar tf /tmp/void-0.7.2/void-0.7.2.tar.gz
         tar tf /tmp/void-0.7.2/void-0.7.2-docs.tar.gz
       fi
