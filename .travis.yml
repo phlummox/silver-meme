@@ -69,7 +69,8 @@ before_install:
   echo STACK_VER $STACK_VER
   echo ARGS $ARGS
   echo PKG_FLAGS $PKG_FLAGS
-  set -euo pipefail
+  # set -e seems to cause stack setup to fail?
+  set -u
 
   export LINUX64_STACK="https://github.com/commercialhaskell/stack/releases/download/v${STACK_VER}/stack-${STACK_VER}-linux-x86_64.tar.gz"
   export OSX_STACK="https://github.com/commercialhaskell/stack/releases/download/v${STACK_VER}/stack-${STACK_VER}-osx-x86_64.tar.gz"
@@ -89,7 +90,7 @@ before_install:
   echo 'remote-repo: hackage.haskell.org:http://hackage.fpcomplete.com/' > $HOME/.cabal/config
   echo 'remote-repo-cache: $HOME/.cabal/packages' >> $HOME/.cabal/config
 
-  set +euox
+  set +eux
   set +o pipefail
 
 - |
@@ -114,7 +115,7 @@ before_install:
       ;;
   esac
 
-  set +euox
+  set +eux
   set +o pipefail
 
 install:
@@ -143,7 +144,7 @@ install:
       ;;
   esac
 
-  set +euox
+  set +eux
   set +o pipefail
 
 
@@ -197,7 +198,7 @@ script:
       ;;
   esac
 
-  set +euox
+  set +eux
   set +o pipefail
 
 before_deploy:
@@ -227,7 +228,7 @@ before_deploy:
   tar cf hup_linux_x86_64.tgz --gzip hup
   ls -al hup_linux_x86_64.tgz
 
-  set +euox
+  set +eux
   set +o pipefail
 
 deploy:
