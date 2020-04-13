@@ -62,6 +62,7 @@ before_install:
 - mkdir -p ~/.local/bin
 - |
 
+  printf '\n***BEFORE_INSTALL***\n'
   set -x
   pwd
   ls -al
@@ -94,6 +95,9 @@ before_install:
   set +o pipefail
 
 - |
+
+  printf '\n***BEFORE_INSTALL 2***\n'
+
   set -x
 
   pwd
@@ -122,6 +126,9 @@ install:
 - echo "$(ghc --version) [$(ghc --print-project-git-commit-id 2> /dev/null || echo '?')]"
 - if [ -f configure.ac ]; then autoreconf -i; fi
 - |
+
+  printf '\n***INSTALL***\n'
+
   set -x
 
   pwd
@@ -150,6 +157,9 @@ install:
 
 script:
 - |
+
+  printf '\n***SCRIPT***\n'
+
   set -x
 
   pwd
@@ -205,6 +215,9 @@ before_deploy:
 - PKGVER=$(cabal info . | head -n  1 | cut -d ' ' -f 2)
 - SRC_TGZ=$PKGVER.tar.gz
 - |
+
+  printf '\n***BEFORE_DEPLOY***\n'
+
   set -x;
 
   pwd
