@@ -60,17 +60,23 @@ matrix:
 before_install:
 # Using compiler above sets CC to an invalid value, so unset it
 - unset CC
-# Download and unpack the stack executable
 - export PATH="/opt/ghc/$GHCVER/bin:/opt/cabal/$CABALVER/bin:/opt/alex/$ALEXVER/bin:/opt/happy/$HAPPYVER/bin:$HOME/.cabal/bin:$PATH"
-# default resolver to use
+
+# default values for stack resolver, version, args
+
 - |
   if [ -z "$STACK_RESOLVER" ] ; then
     export STACK_RESOLVER="lts-11"
   fi
 
-- export ARGS="--resolver $STACK_RESOLVER --stack-yaml stack-$STACK_RESOLVER.yaml"
+  if [ -z "$STACK_VER" ] ; then
+    export STACK_VER="1.9.3"
+  fi
+
+  export ARGS="--resolver $STACK_RESOLVER --stack-yaml stack-$STACK_RESOLVER.yaml"
 
 # set up build tools
+# Download stack executable always
 - |
   printf '\n***BEFORE_INSTALL***\n'
   set -x
