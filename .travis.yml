@@ -73,7 +73,6 @@ before_install:
 
 # set up build tools
 - |
-
   printf '\n***BEFORE_INSTALL***\n'
   set -x
   pwd
@@ -124,7 +123,6 @@ before_install:
   set +o pipefail
 
 - |
-
   printf '\n***BEFORE_INSTALL 2***\n'
 
   set -x
@@ -155,7 +153,6 @@ before_install:
 
 install:
 - |
-
   printf '\n***INSTALL***\n'
 
   set -x
@@ -188,7 +185,6 @@ install:
 
 script:
 - |
-
   printf '\n***SCRIPT***\n'
 
   set -x
@@ -260,7 +256,6 @@ script:
 
 before_deploy:
 - |
-
   printf '\n***BEFORE_DEPLOY***\n'
 
   set -x;
@@ -303,11 +298,11 @@ deploy:
   provider: releases
   file:
   - "$SRC_TGZ"
+    overwrite: true
   - hup_linux_x86_64.tgz
-  # overwrite: true
+    overwrite: true
   api_key:
-    # silver-meme secure key begins "Ki0t..."
-    secure: Ki0t7bBVqTI2wqljf1qGXrVOgCNFQ03mblgZza5FsVAC35dwT9SJCYFdL7PmiNmG0ytWujdl0rqjAF/7S8mQcKdJrVAfj8ObT6ZyhxPTQekM3fALqlxCqHNeUuUT2r1p/fLTBNI52sTZaNsRixIMCgqd5onD4lgrSPSLwETJt8zxf+y9yQ+2JYTsY2k1mgPhgyAsgbWnO0xJXrxvekiz51u7UDUPV2e0ZUTb1vG+OvcZZ8ArfpMQLwJI4dDySpd99grl6SAcoS/mNPr/RYPaTGhmdKKRdS3jREhVanJGgZbd5jgs8TFsGO5NZWM4l1ACFQBcCEP6ZA6N/x/DpR9AufuFqW4kVkgDkWlGczrqcDgTkaKgJwfR3Q9hZu0weAKSoqmDppncapYhxAGNV0mzTdz24wx20v2ECtI25QcYQd7S22SJVDAvVRLQUtJJlAOQjjrDkCNCwTBClFcGoHyN2Qd/RaYql6B0ZPseHBs1SzNK/3H0ZGM3DFh9OTqM6jixwKSAgJexDWNHuNoIDqQxC/10ju2ObV+G2gwc1gW89xwCKl1zBS68WlOSiBbT6cd6r0WQl9CRB/FFxQY6tY2aI44cdsfFepETxdHCY6fDlhillfeRtwyL8Vi0K24utP/DhGfD2stGqgogREzIOlp+0LoV7amQV9fQ43gnG9Tmqws=
+    secure: W90a0EtNPIarzAQ+6fjTsjVZVTeHcMi7YQepqe9o6Zc0xq1ZKH32Gyh3wKSi5P3L2zfCnLrFQ7B7bJsQTRdZsRpXTT1BwmcG19jew7mP2AxetC22J+h0uO1ZDwkM0hOPahtf2ZJwmNTJDo4YLS517z1+e+YgfrhhQkR9FaoegKoMpuRzhCCT2qqlNXFBOiA59LXzBlhf2z/vea/g0C7+x7s11FMHexhHMzYDyyEh2H5Q31cLL0f5gGZMo1VovgPke34acqf6bnjXpj9X7FP9iWUtwAgcqX0+cxOTEYzZ1P8ELG6754aPMd5sgMGmN7GIkvleFLqnbKjTRCNOFEppV2kH+jiANviZCR7WHYMBYXzmsh7vnmkJtCKKrWzRJbiuccPfswL8bn8utMf6AmSbLgNuwUpvcgliK+LcAT9Xrry+cikYOAjyFVP611S6uCFHj6zwUUxymXgwTRh8EzJcfxIidI5GuC4APyD/JdE/TD1WjmTu8zYOt849aKcAtHBv+LkbaacCJ5qrnb7MulNOIjznOvJB34jFHOnAyLN5/9khWvDJE4mGVCVkVD1eaD7dpLW6QZmL8RxwKKt+hxFT7BNbo1cOJbe6Qh0S+O+fGVVDqRP2OZ0E7EpDtIBYyXmHf9nGi8zOX3ZgsAYKpWdJMVnxJalSrcZU3bSP6ie/8U8=
   on:
     #tags: true
     #all_branches: true
