@@ -298,9 +298,7 @@ deploy:
   provider: releases
   file:
   - "$SRC_TGZ"
-    overwrite: true
   - hup_linux_x86_64.tgz
-    overwrite: true
   api_key:
     secure: W90a0EtNPIarzAQ+6fjTsjVZVTeHcMi7YQepqe9o6Zc0xq1ZKH32Gyh3wKSi5P3L2zfCnLrFQ7B7bJsQTRdZsRpXTT1BwmcG19jew7mP2AxetC22J+h0uO1ZDwkM0hOPahtf2ZJwmNTJDo4YLS517z1+e+YgfrhhQkR9FaoegKoMpuRzhCCT2qqlNXFBOiA59LXzBlhf2z/vea/g0C7+x7s11FMHexhHMzYDyyEh2H5Q31cLL0f5gGZMo1VovgPke34acqf6bnjXpj9X7FP9iWUtwAgcqX0+cxOTEYzZ1P8ELG6754aPMd5sgMGmN7GIkvleFLqnbKjTRCNOFEppV2kH+jiANviZCR7WHYMBYXzmsh7vnmkJtCKKrWzRJbiuccPfswL8bn8utMf6AmSbLgNuwUpvcgliK+LcAT9Xrry+cikYOAjyFVP611S6uCFHj6zwUUxymXgwTRh8EzJcfxIidI5GuC4APyD/JdE/TD1WjmTu8zYOt849aKcAtHBv+LkbaacCJ5qrnb7MulNOIjznOvJB34jFHOnAyLN5/9khWvDJE4mGVCVkVD1eaD7dpLW6QZmL8RxwKKt+hxFT7BNbo1cOJbe6Qh0S+O+fGVVDqRP2OZ0E7EpDtIBYyXmHf9nGi8zOX3ZgsAYKpWdJMVnxJalSrcZU3bSP6ie/8U8=
   on:
