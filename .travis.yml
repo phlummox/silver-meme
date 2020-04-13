@@ -296,6 +296,9 @@ before_deploy:
 
 deploy:
   provider: releases
+  # travis lint warns skip_cleanup is deprecated,
+  # but currently still seems to be necessary.
+  skip_cleanup: true
   file:
   - "$SRC_TGZ"
   - hup_linux_x86_64.tgz
