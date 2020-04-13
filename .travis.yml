@@ -185,5 +185,5 @@ deploy:
   on:
     #tags: true
     all_branches: true
-    repo: phlummox/hup
+    repo: phlummox/silver-meme
     condition: $RELEASE = true
