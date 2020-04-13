@@ -2,6 +2,10 @@
 # Do not choose a language; we provide our own build tools.
 language: generic
 
+env:
+  global:
+  - PATH="$HOME/.local/bin:$PATH"
+
 # Caching so the next build will be fast too.
 cache:
   directories:
@@ -58,7 +62,7 @@ before_install:
 # Using compiler above sets CC to an invalid value, so unset it
 - unset CC
 # Download and unpack the stack executable
-- export PATH=/opt/ghc/$GHCVER/bin:/opt/cabal/$CABALVER/bin:$HOME/.local/bin:/opt/alex/$ALEXVER/bin:/opt/happy/$HAPPYVER/bin:$HOME/.cabal/bin:$PATH
+- export PATH=/opt/ghc/$GHCVER/bin:/opt/cabal/$CABALVER/bin:/opt/alex/$ALEXVER/bin:/opt/happy/$HAPPYVER/bin:$HOME/.cabal/bin:$PATH
 - mkdir -p ~/.local/bin
 - |
 
@@ -71,6 +75,7 @@ before_install:
   echo ARGS $ARGS
   echo PKG_FLAGS $PKG_FLAGS
   echo TRAVIS_BUILD_DIR $TRAVIS_BUILD_DIR
+  echo PATH $PATH
   # set -e seems to cause stack setup to fail?
   set -u
 
@@ -80,14 +85,9 @@ before_install:
   then
     travis_retry curl --insecure -L "${OSX_STACK}" | tar xz --strip-components=1 --include '*/stack' -C ~/.local/bin
     stack setup
-    export PATH=`stack path --compiler-bin`:$PATH
-    stack install cabal-install
-    which cabal
-    cabal --version
   else
     travis_retry curl -L "${LINUX64_STACK}" | tar xz --wildcards --strip-components=1 -C ~/.local/bin '*/stack'
     stack setup
-    stack install cabal-install
   fi
 
   # Use the more reliable S3 mirror of Hackage
@@ -111,6 +111,7 @@ before_install:
   echo ARGS $ARGS
   echo PKG_FLAGS $PKG_FLAGS
   echo TRAVIS_BUILD_DIR $TRAVIS_BUILD_DIR
+  echo PATH $PATH
   set -euo pipefail
 
   case "$BUILD" in
@@ -143,6 +144,7 @@ install:
   echo ARGS $ARGS
   echo PKG_FLAGS $PKG_FLAGS
   echo TRAVIS_BUILD_DIR $TRAVIS_BUILD_DIR
+  echo PATH $PATH
   set -euo pipefail
 
   case "$BUILD" in
@@ -175,6 +177,7 @@ script:
   echo ARGS $ARGS
   echo PKG_FLAGS $PKG_FLAGS
   echo TRAVIS_BUILD_DIR $TRAVIS_BUILD_DIR
+  echo PATH $PATH
   set -euo pipefail
 
   case "$BUILD" in
@@ -222,16 +225,14 @@ script:
   echo BUILD $BUILD
   echo STACK_VER $STACK_VER
   echo ARGS $ARGS
-  echo TRAVIS_BUILD_DIR $TRAVIS_BUILD_DIR
   echo PKG_FLAGS $PKG_FLAGS
+  echo TRAVIS_BUILD_DIR $TRAVIS_BUILD_DIR
+  echo PATH $PATH
 
   set +eux
   set +o pipefail
 
 before_deploy:
-- which cabal
-- PKGVER=$(cabal info . | head -n  1 | cut -d ' ' -f 2)
-- SRC_TGZ=$PKGVER.tar.gz
 - |
 
   printf '\n***BEFORE_DEPLOY***\n'
@@ -245,17 +246,26 @@ before_deploy:
   echo ARGS $ARGS
   echo PKG_FLAGS $PKG_FLAGS
   echo TRAVIS_BUILD_DIR $TRAVIS_BUILD_DIR
-  set -uo pipefail
+  echo PATH $PATH
+  set -u
+
+  # e.g. mypackage-0.1.2.0
+  # "ls dependencies" avail from at least stack >= 1.9.3,
+  # so should be fine.
+  export PKGVER=$(stack $ARGS ls dependencies --depth 0 | sed 's/ /-/')
+  export SRC_TGZ=$PKGVER.tar.gz
 
   echo ${PKGVER}
   echo ${SRC_TGZ}
+
   ls -al;
+
   if [ ! -f "$SRC_TGZ" ] ; then
     stack sdist;
     distdir=`stack path --dist-dir`;
     cp $distdir/$SRC_TGZ .;
   fi
-  ls -al "$SRC_TGZ"; true
+  ls -al "$SRC_TGZ"
   cp ~/.local/bin/hup .
   tar cf hup_linux_x86_64.tgz --gzip hup
   ls -al hup_linux_x86_64.tgz
