@@ -305,4 +305,4 @@ deploy:
     #tags: true
     #all_branches: true
     repo: phlummox/silver-meme
-    condition: $RELEASE = trueXX
+    condition: $RELEASE = true
